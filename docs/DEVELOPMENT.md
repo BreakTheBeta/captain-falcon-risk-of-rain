@@ -11,7 +11,7 @@
 - `tools/HSDLib/HSDRaw/`: pinned MIT upstream source; see THIRD_PARTY.md.
 - `scripts/build-falcon-art.py`: procedural fallback sprite/mask generation.
 - `scripts/bake-melee-poses.*` and `build-falcon-selection.*`: supersampled original-model animation strips and character selection artwork, generated locally.
-- `tests/`: fast Lua input, physics, defence and asset regression checks. Lua 5.4 is run through Python ctypes; no game files are required for the seven core suites.
+- `tests/`: fast Lua input, physics, defence and asset regression checks. Lua 5.4 is run through Python ctypes; no game files are required for the eight core suites.
 
 The original GameMaker world and collision remain 2D. Gameplay uses 40 precomputed pose strips from the original XYZ model. The software renderer remains available for baking and camera previews. Visual TransN translation is removed; special movement is applied exactly once to the collision actor. These are Melee-inspired RoR controls/combat, not a replacement implementation of every Melee rule.
 
@@ -45,3 +45,5 @@ Contributions should describe the input/trigger, changed behavior and verificati
 For launcher-only checks, run `python3 tests/test-launcher.py`. These simulate the Gamescope/Wine process chain, verify one fullscreen wrapper, preserve paths containing spaces, propagate game failures and check lock release. During live Gamescope tests capture the **outer Gamescope window/display**, since native X11 window captures can contain stale images when Vulkan presents directly to Gamescope.
 
 The launcher stops lingering Wine **service helpers** after the tracked game exits. Cleanup requires all of: a fixed Wine helper name, the same WINEPREFIX, and ancestry under this launch's gamescopereaper. It does not kill arbitrary Wine apps or unrelated prefixes. This handles Wine services that otherwise keep Gamescope/Steam marked running after the actual game has closed.
+
+Three-choice reward artwork uses the original crate sprite, frame, scale and collision mask. Draw at the instance origin; centring a placeholder on this floor anchor buries it. The native `can_activate` state controls the interaction hint. `tests/test-choice-crates.lua` exercises replacement and draw callbacks at a floor anchor and checks native eligibility/menu states.

@@ -48,9 +48,15 @@ local function replaceCrate(original, source)
     slot.crate.sprite = source.crate.sprite
     local crate = slot.crate:create(original.x, original.y)
     crate.sprite = original.sprite
+    -- Generated pool objects inherit a generic parent. Keep the source reward's
+    -- actual sprite/mask pair, so native landing and activation use its geometry.
+    crate.mask = original.mask or original.sprite
+    crate.subimage = original.subimage
+    crate.xscale = original.xscale
+    crate.yscale = original.yscale
     crate:set("tx", original.x + 40)
     crate:set("ty", original.y - 45)
-    crate.visible = false
+    crate.visible = false -- Hide the native catalogue grid; draw its chest sprite below.
     slot.instance = crate
     slot.tier = source.name
     slot.displayItems = slot.pool:toList()
@@ -106,21 +112,40 @@ local function wrap(text, limit)
     return table.concat(lines,"\n")
 end
 callback.register("onDraw", function()
+    local prompt, promptDistance
+    local player=misc.players[1]
     for _,slot in ipairs(slots) do
         local crate=slot.instance
         if crate and crate:isValid() then
+            local sprite=crate.sprite
             local color=tiers[slot.tier] or white
-            graphics.color(ink);graphics.rectangle(crate.x-8,crate.y-7,crate.x+8,crate.y+7)
-            graphics.color(color);graphics.rectangle(crate.x-8,crate.y-7,crate.x+8,crate.y+7,true)
-            graphics.print("?",crate.x,crate.y-5,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
-            if crate:get("active")==0 then
-                local player=misc.players[1]
-                if player and math.abs(player.x-crate.x)<24 and math.abs(player.y-crate.y)<32 then
-                    graphics.print("["..input.getControlString("enter",player).."] Choose one",crate.x,crate.y-34,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
+            -- Native sprite origins are the same anchor used by its collision
+            -- mask. A centred +/-7 placeholder buried half its art in the floor.
+            graphics.color(white);graphics.alpha(1)
+            graphics.drawImage{image=sprite,x=crate.x,y=crate.y,subimage=crate.subimage,
+                xscale=crate.xscale,yscale=crate.yscale}
+            local top=crate.y+((sprite.boundingBoxTop or 0)-sprite.yorigin)*(crate.yscale or 1)
+            -- Three small rarity lights identify this as a three-choice reward
+            -- without replacing the game's chest artwork with a generic square.
+            graphics.color(ink)
+            graphics.rectangle(crate.x-6,top-6,crate.x+6,top-2)
+            graphics.color(color)
+            for i=-1,1 do graphics.rectangle(crate.x+i*4-1,top-5,crate.x+i*4+1,top-3) end
+            -- Hidden native drawing also hides its prompt. Redraw one hint,
+            -- using native eligibility rather than a separate proximity box.
+            if player and crate:get("active")==0 and crate:get("can_activate")==1 then
+                local distance=(player.x-crate.x)^2+(player.y-crate.y)^2
+                if not promptDistance or distance<promptDistance then
+                    prompt={crate=crate,top=top,color=color};promptDistance=distance
                 end
             end
         end
     end
+    if prompt then
+        graphics.color(prompt.color)
+        graphics.print("["..input.getControlString("enter",player).."] Choose one",prompt.crate.x,prompt.top-20,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
+    end
+    graphics.alpha(1);graphics.color(white)
 end)
 callback.register("onHUDDraw", function()
     for _,slot in ipairs(slots) do
@@ -202,4 +227,4 @@ if testMode then
     end)
 end
 
-log("[ThreeChoice] Loaded 1.0.0; QA=" .. tostring(testMode))
+log("[ThreeChoice] Loaded 1.0.1; QA=" .. tostring(testMode))

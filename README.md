@@ -54,7 +54,7 @@ Development captures from the Linux/Wine build. Gameplay captures include test f
 
 ![Captain Falcon selected on the survivor screen, with controller and keyboard instructions](docs/screenshots/survivor-selection.png)
 
-![Captain Falcon exploring Damp Caverns with item test crates nearby](docs/screenshots/falcon-gameplay.png)
+![Captain Falcon beside grounded native rarity chests with three-choice lights](docs/screenshots/falcon-gameplay.png)
 
 ![Imported Melee flame particles during Falcon Punch in Desolate Forest](docs/screenshots/falcon-punch-flames.png)
 

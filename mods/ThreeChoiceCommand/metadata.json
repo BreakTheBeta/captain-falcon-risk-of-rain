@@ -1,7 +1,7 @@
 {
   "name": "Three-Choice Command",
   "internalname": "threeChoiceCommand",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Will",
   "description": "Every normal item reward offers three distinct random choices of the same rarity. Command is enabled automatically. Single-player.",
   "mpcompat": false
