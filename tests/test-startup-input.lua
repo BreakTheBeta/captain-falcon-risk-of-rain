@@ -6,7 +6,7 @@ local function noop() end
 package.preload['melee_renderer']=function() return {draw=noop} end
 package.preload['melee_audio']=function() return {begin=noop,step=noop,jump=noop,doubleJump=noop,land=noop,shieldBreak=noop,update=noop} end
 Color={fromHex=function(x) return x end}
-modloader={checkFlag=function() return false end}
+modloader={checkFlag=function(flag) return flag=='falcon_input_trace' end}
 Sprite={load=function(name,path,frames) return {name=name,frames=frames} end}
 ParentObject={find=function() return setmetatable({}, {__index=function() return function() return nil end end}) end}
 Survivor={new=function()
@@ -35,7 +35,9 @@ function p:fireExplosion() return {set=function(self) return self end} end
 p.isValid=function() return true end
 misc={players={p},shakeScreen=noop}
 isa=function(obj,kind) return obj==p and kind=='PlayerInstance' end
-log=noop;graphics=setmetatable({}, {__index=function() return noop end})
+local traces={}
+log=function(line) if line:find('[Falcon input]',1,true) then traces[#traces+1]=line end end
+graphics=setmetatable({}, {__index=function() return noop end})
 dofile(root..'/main.lua')
 survivor.callbacks.init(p)
 local function fire(name) for _,f in ipairs(handlers[name] or {}) do f() end end
@@ -88,3 +90,11 @@ assert(p.data.shielding and p:get('invincible')>=2,'Shield must engage as soon a
 reset();p:set('activity',99);frame({face2=true});p:set('dead',1);frame();p:set('dead',0);p:set('activity',0);frame()
 assert(not p.data.attack,'Death must discard arrival inputs')
 print('PASS: replay cannot repeat; held shield activates on arrival; death discards queued actions')
+
+reset();traces={};frame({face2=true})
+assert(traces[1]:find('pad=0',1,true) and traces[1]:find('rawAB=false,true',1,true),'Trace must include assigned pad and raw special input')
+assert(traces[1]:find('edgesAB=false,true',1,true) and traces[1]:find('action=punch',1,true),'Trace must relate input edges to dispatched actions')
+for n=1,1000 do frame({face2=true}) end
+assert(#traces==150,'Startup trace must stop after 900 frames without repeating held-button samples')
+assert(traces[#traces]:find('frame=895 ',1,true),'Last regular trace sample must stay within the startup window')
+print('PASS: optional startup trace records real dispatch and stops after 900 frames')

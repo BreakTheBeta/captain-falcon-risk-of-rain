@@ -7,6 +7,7 @@ local mesh=require('melee_renderer')
 local meleeAudio=require('melee_audio')
 local falcon=Survivor.new('Captain Falcon')
 local qa=modloader.checkFlag('falcon_test')
+local traceInput=modloader.checkFlag('falcon_input_trace')
 local S=physics.constants.scale
 local sprites={}
 for name,n in pairs({idle=4,run=8,jump=1,fall=1,climb=2,death=6,jab=4,knee=8,raptor=8,punch=12,kick=8,dive=8,ftilt=6,utilt=8,dtilt=6,smash=8,usmash=8,dsmash=8,dash=6,nair=8,bair=6,uair=6,dair=6,shield=1,dodge=4,roll=6,taunt=6}) do
@@ -348,6 +349,16 @@ callback.register('postStep',function()
      p.sprite=sprite;p.subimage=1+math.floor(d.tick/6)%sprite.frames;p.spriteSpeed=0
     end
    else d.shielding=false;d.pending=nil;s.vx=0;s.vy=0;d.attack=nil end
+   -- Opt-in, bounded startup diagnostics for remote-controller problems.
+   -- Capture raw controller input alongside the fighter's blocking state;
+   -- never alter assignment, dispatch, timing, or gameplay for tracing.
+   if traceInput and d.tick<=900 and (d.tick%6==1 or i.attackPressed or i.specialPressed) then
+    log(string.format('[Falcon input] frame=%d pad=%s axes=%.2f,%.2f rawAB=%s,%s edgesAB=%s,%s move=%s,%s activity=%s->%s action=%s lag=%s squat=%s grounded=%s specialFall=%s stun=%s hitstop=%s velocity=%.2f,%.2f',
+     d.tick,tostring(pad.id),pad.analogX or 0,pad.analogY or 0,
+     tostring(pad.attack or false),tostring(pad.special or false),tostring(i.attackPressed or false),tostring(i.specialPressed or false),
+     tostring(i.moveX or i.x),tostring(i.moveY or i.y),tostring(activity),tostring(p:get('activity')),d.attack and d.attack.name or 'none',
+     tostring(s.lag),tostring(s.squat),tostring(s.grounded),tostring(d.specialFall),tostring(d.stunned),tostring(d.hitstop),s.vx,s.vy))
+   end
    meleeAudio.update(p)
   end
  end

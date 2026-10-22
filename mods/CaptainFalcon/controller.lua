@@ -32,7 +32,7 @@ function C.read(api,p,previous)
  end
  local a=down(mapping.attack);local b=down(mapping.special)
  local smash=cstick or (a and ((h.windowX or 0)>0 and mx==h.flickX or (h.windowY or 0)>0 and my==h.flickY))
- local out={connected=true,attack=a or cstick,special=b,jump=down(mapping.jump1) or down(mapping.jump2),
+ local out={connected=true,id=id,attack=a or cstick,special=b,jump=down(mapping.jump1) or down(mapping.jump2),
   defend=down('shoulderlb') or down('shoulderrb'),
   taunt=down('padu'),help=down('select'),smash=smash,cstick=cstick,
   left=ax<0,right=ax>0,up=ay<0,down=ay>0,moveX=mx,moveY=my,analogX=x,analogY=y,analog=not (mx~=0 and math.abs(x)<=dz),dashPressed=flickX,
