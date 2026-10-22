@@ -8,6 +8,12 @@ allowed={'.cs','.csproj','.py','.lua','.md','.txt','.json','.sh','.yml','.yaml',
 for name in filter(None,files):
  p=base/name
  if not p.is_file():continue
+ # Reviewed gameplay video and its animated README preview are the only media exceptions.
+ if name in {'docs/media/falcon-showcase.mp4','docs/media/falcon-showcase-preview.gif'}:
+  data=subprocess.check_output(['git','show',':'+name],cwd=base)
+  valid=(len(data)>=12 and data[4:8]==b'ftyp') if p.suffix=='.mp4' else data[:6] in {b'GIF87a',b'GIF89a'}
+  if not valid or len(data)>25*1024*1024:errors.append('Invalid or oversized gameplay showcase: '+name)
+  continue
  # Only explicitly reviewed documentation captures may contain binary images.
  screenshot = name in {
   'docs/screenshots/survivor-selection.png',
@@ -34,4 +40,4 @@ for name in filter(None,files):
  if '/home/'+'will/' in text or '100.104.'+'138.104' in text:errors.append('Machine-specific private path/address: '+name)
 if errors:
  print('\n'.join(errors));sys.exit(1)
-print('Source audit passed:',len(list(filter(None,files))),'tracked source/documentation files including reviewed screenshots; no extracted game assets or machine-specific paths')
+print('Source audit passed:',len(list(filter(None,files))),'tracked source/documentation files including reviewed gameplay media; no extracted game assets or machine-specific paths')

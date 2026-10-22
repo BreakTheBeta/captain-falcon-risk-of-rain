@@ -42,3 +42,6 @@ Save.ini
 
 # Reviewed gameplay screenshots only; extracted assets stay private.
 !/docs/screenshots/*.png
+
+# Reviewed gameplay showcase exports only.
+!/docs/media/falcon-showcase.mp4

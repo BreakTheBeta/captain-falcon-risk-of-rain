@@ -1,0 +1,11 @@
+# Gameplay showcase
+
+`falcon-showcase.mp4` is a 1280×720, 60 fps gameplay demonstration of v0.4.9. The README embeds an animated preview that opens GitHub’s full MP4 player; GitHub strips arbitrary HTML video tags from README content.
+
+Recorded with keyboard input on a separate, silent virtual display. The cut shows complete Falcon Punch actions with imported Melee flames, short hops, then diagonal air dodges landing into wavedashes. Gameplay runs at its recorded speed; the picture is enlarged to make Falcon visible. This is a movement demonstration, not a full combat or controller compatibility test.
+
+Edited and exported using craftingApps’ headless FilmCraft workflow. Native editable framing, chapter graphics and short transitions are preserved in the local FilmCraft project; original captures are retained there. No separately distributed models, textures or sound files are included. Game imagery and audio belong to their respective owners; the project’s MIT license covers its code.
+
+The cut plan and native finishing summary are recorded in [showcase-edit.json](showcase-edit.json).
+
+Audio: captured game mix, without commentary or added music. Structural and decode checks do not establish subjective sound quality; continuous listening review remains pending.
