@@ -11,7 +11,7 @@ Supply a disc dump from your own Melee copy with `--melee`. The importer reads i
 ## What setup does
 
 1. Creates an isolated Python environment and installs NumPy/Pillow.
-2. Checks Wine, winepath, FFmpeg, flock and liblua5.4.
+2. Checks Wine, winepath, FFmpeg, flock, liblua5.4 and Gamescope.
 3. Downloads the tested RoRML 1.0.1 and DXVK 2.7.1 archives and checks pinned SHA-256 checksums.
 4. Uses a system .NET SDK, `FALCON_DOTNET`, or installs .NET 8.0.426 under `.tools/` using Microsoft's installer.
 5. Extracts sound resources from your original Risk of Rain data file.
@@ -30,7 +30,7 @@ Files generated from either game are ignored by Git. Setup does not use or edit 
 - **Setup stopped partway:** keep the log/error and rerun with a fresh directory, e.g. `./setup.sh --melee "/path/to/Melee.iso" --output "$PWD/build/retry/play"`. Existing output directories are never overwritten. Only delete an incomplete directory after confirming it contains no save you need.
 - **Output already exists:** launch the existing installation. To deploy Lua edits after `git pull`, close the game and run `python3 scripts/update-mods.py`. If an update changes imported asset formats or adds animations, build a fresh output directory as above.
 - **Controls wrong through Moonlight:** see [CONTROLLERS.md](CONTROLLERS.md). A PS4 exposed as a native PlayStation device can have different axis/trigger numbers from the canonical XInput layout this mod expects.
-- **Character select is cropped:** use `./launch.sh`, which fixes the Wine desktop at 1280×720. Do not externally resize the child game window.
+- **Character select is cropped:** use `./launch.sh`, which fixes the internal Gamescope display at 1280×720 and presents it fullscreen. Do not externally resize the child game window.
 - **Locked launcher/deployment:** fully close the game; the launcher holds a lock for its lifetime.
 
 The launcher writes its log under the configured play folder's parent, usually `build/logs/launch.log`. RoRML writes additional logs under `build/play/logs/`.
@@ -38,3 +38,9 @@ The launcher writes its log under the configured play folder's parent, usually `
 ## Remove the installation
 
 Delete the cloned repository and its generated play folder when finished. If you chose an external `--output`, remove that separately. Keep any saves you want first. The original Steam installation is unchanged.
+
+## Fullscreen and Gamescope
+
+The normal launcher always wraps the game in Gamescope (`-f`, internal 1280×720, output 1920×1080, 60 Hz). The game itself is the tracked child; no Wine Explorer desktop sits between Steam and the game. Closing the game should close Gamescope and release the launch lock. The launcher includes Gamescope's binary directory in PATH so packaged `gamescopereaper` is found even when Steam omits `/usr/games`.
+
+Set `FALCON_OUTPUT_WIDTH` and `FALCON_OUTPUT_HEIGHT` to change the output resolution. Gamescope still runs fullscreen and keeps the game at 720p internally. Use `FALCON_GAMESCOPE=0` only for a diagnostic launch without Gamescope; `FALCON_GAMESCOPE_BACKEND=sdl` can force the nested SDL backend when troubleshooting. Gamescope logs are next to `launch.log`.

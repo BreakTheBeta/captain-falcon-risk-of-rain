@@ -61,7 +61,7 @@ keys={l=input.PRESSED};fire('preStep')
 assert(not damage(20),'Shield must protect before the native enemy step on its first input frame')
 fire('postStep')
 reset();p:set('invincible',0);p:set('hp',125)
-frame({l=input.PRESSED});assert(not damage(20) and p:get('hp')==125,'Held shield must cancel incoming HP damage')
+frame({l=input.PRESSED});assert(p:get('invincible')>0,'Shield must use native immunity for damage outside onDamage');assert(not damage(20) and p:get('hp')==125,'Held shield must cancel incoming HP damage')
 for n=1,4 do frame({l=input.HELD}) end
 frame({l=input.HELD,d=input.PRESSED})
 assert(p.data.attack and p.data.attack.name=='roll')
@@ -83,7 +83,15 @@ assert(damage(20),'Releasing shield must stop protection before native enemy upd
 fire('postStep')
 reset();p:set('invincible',0);p:set('hp',125)
 frame({l=input.PRESSED});p.data.shield=5
-assert(not damage(20) and p:get('hp')==125,'The hit which breaks shield must still be blocked')
+assert(handlers.onDamage[1](p,20)==true and p:get('hp')==125,'The callback hit which breaks shield must still be blocked')
 assert(not p.data.shielding and p.data.stunned>0,'Depleted shield must break and stun')
 assert(damage(20),'Broken shield must not leave permanent immunity')
 print('PASS: shield release, shield break and roll completion restore vulnerability')
+reset();p:set('invincible',0);p:set('hp',125)
+for n=1,400 do
+ p:set('invincible',math.max(0,p:get('invincible')-1));frame({l=input.HELD})
+end
+assert(p.data.stunned>0 and not p.data.shielding and p:get('invincible')==0,'Holding shield to exhaustion must break it and remove immunity')
+reset();p:set('invincible',50);frame({l=input.PRESSED});frame({})
+assert(p:get('invincible')==50,'Shield release preserves longer invincibility granted by other game mechanics')
+print('PASS: native shield immunity is finite and preserves external invincibility timers')

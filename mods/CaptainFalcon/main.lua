@@ -105,14 +105,16 @@ falcon:addCallback('init',function(p)
  d.nativeGravity=p:get('pGravity1');d.nativeLaunch=nil;d.frameInput=nil;d.framePad=nil
  d.lCancelUntil=nil;d.landedAt=nil;d.inputDevice=nil
  d.motion=physics.new();d.keys={};d.combo=0;d.comboTimer=0;d.tick=0;d.attack=nil;d.pending=nil
+ d.ropeDetach=0;d.shieldNativeOwned=false
  d.hitstop=0;d.shield=60;d.shielding=false;d.stunned=0;d.help=false;d.airDodgeUsed=false;d.recoveryUsed=false;d.specialFall=false
- log('[Falcon] Initialized 0.4.5: keyboard + controller; native-size artwork; no skill cooldowns')
+ log('[Falcon] Initialized 0.4.6: keyboard + controller; native-size artwork; no skill cooldowns')
 end)
 falcon:addCallback('levelUp',function(p) p:survivorLevelUpStats(30,3,.002,2) end)
 -- Host skill dispatch is deliberately inert. The merged input interpreter below
 -- handles edge-triggered attacks, so holding a key cannot auto-cast abilities.
 falcon:addCallback('useSkill',function() end)
 
+local syncShieldImmunity
 callback.register('onDamage',function(p,amount)
  if not isFalcon(p) then return end
  local d=data(p)
@@ -122,7 +124,7 @@ callback.register('onDamage',function(p,amount)
  if d.shielding and d.stunned==0 then
   d.shield=math.max(0,d.shield-amount*.65);d.motion.lag=math.max(d.motion.lag,3)
   burst(p,13,blue,p.x,p.y-8)
-  if d.shield<=0 then d.shielding=false;d.stunned=120;d.motion.lag=120;meleeAudio.shieldBreak(d) end
+  if d.shield<=0 then d.shielding=false;d.stunned=120;d.motion.lag=120;meleeAudio.shieldBreak(d);syncShieldImmunity(p) end
   if qa then log('[Falcon QA] SHIELD blocked '..amount..' remaining='..d.shield) end
   return true
  end
@@ -132,9 +134,23 @@ local function readInput(p,d)
  local i;i,d.keys=keyboard.read(input.checkKeyboard,d.keys,pad)
  return i,pad
 end
+syncShieldImmunity=function(p)
+ local d=data(p);local inv=p:get('invincible') or 0
+ if d.shielding then
+  if inv<2 then p:set('invincible',2);d.shieldNativeOwned=true end
+ elseif d.shieldNativeOwned then
+  if inv<=2 and not (d.attack and d.attack.name=='roll') then p:set('invincible',0) end
+  d.shieldNativeOwned=false
+ end
+end
+local function breakShield(p)
+ local d=data(p)
+ d.shield=0;d.shielding=false;d.stunned=120;d.motion.lag=120;meleeAudio.shieldBreak(d)
+end
 local function updateShield(p,i)
  local d=data(p);local s=d.motion
- d.shielding=i.defend and s.grounded and not d.attack and d.shield>1 and d.stunned==0 and s.squat==0 and not i.jumpPressed
+ d.shielding=i.defend and p:get('activity')==0 and s.grounded and not d.attack and d.shield>0 and d.stunned==0 and s.squat==0 and not i.jumpPressed
+ syncShieldImmunity(p)
 end
 local function startGroundDodge(p,i)
  local d=data(p)
@@ -149,10 +165,24 @@ callback.register('preStep',function()
    -- Sample once before native enemy/damager updates. Reuse these edges in
    -- postStep so a first-frame shield/roll is already protecting the actor.
    d.frameInput,d.framePad=readInput(p,d)
+   if d.ropeDetach>0 then
+    d.ropeDetach=d.ropeDetach-1
+    p:set('canrope',d.ropeDetach==0 and 1 or 0)
+   end
+   if p:get('activity')==30 then
+    d.motion.grounded=false
+    if d.frameInput.jumpPressed and d.stunned==0 and (p:get('dead') or 0)==0 and p:get('hp')>0 then
+     clearActivity(p);p:set('rope_parent',-1);p:set('ropeUp',0);p:set('ropeDown',0);p:set('canrope',0);p:set('free',1)
+     d.ropeDetach=12;d.frameInput.ropeJump=true
+     local s=d.motion;s.vy=-physics.constants.jump;s.vx=(d.frameInput.moveX or d.frameInput.x)*physics.constants.dash
+     s.jumps=1+(p:get('feather') or 0);s.fast=false;s.squat=0;s.lag=0;s.launchGravity=nil
+     d.specialFall=false;d.airDodgeUsed=false;d.recoveryUsed=false;d.airFrame=0;d.airAnimation='jump';meleeAudio.jump(d)
+    end
+   end
    if (p:get('dead') or 0)==0 and p:get('hp')>0 then
     updateShield(p,d.frameInput);startGroundDodge(p,d.frameInput)
     if d.attack and d.attack.name=='roll' then p:set('invincible',math.max(p:get('invincible'),2)) end
-   else d.shielding=false end
+   else d.shielding=false;syncShieldImmunity(p) end
    -- Map objects may apply their launch either side of the global step hooks.
    local gravity=p:get('pGravity1')
    if gravity and gravity>0 then d.nativeGravity=gravity end
@@ -237,6 +267,9 @@ callback.register('postStep',function()
    if i.helpPressed then d.help=not d.help end
    if i.defendPressed and not s.grounded and d.attack and d.attack.definition.aerial then d.lCancelUntil=d.tick+7 end
    local activity=p:get('activity')
+   if d.ropeDetach>0 and activity==30 then
+    clearActivity(p);p:set('rope_parent',-1);p:set('canrope',0);activity=0
+   end
    local alive=(p:get('dead') or 0)==0 and p:get('hp')>0
    if alive and d.beforeX and (activity==0 or d.attack) then
     local nativeV=p:get('pVspeed') or 0
@@ -269,9 +302,12 @@ callback.register('postStep',function()
       end
      end
      if d.pending then d.pending.life=d.pending.life-1;if d.pending.life<=0 then d.pending=nil end end
-     if d.shielding then d.shield=math.max(0,d.shield-.16) else d.shield=math.min(60,d.shield+.1) end
+     if d.shielding then
+      d.shield=math.max(0,d.shield-.16);if d.shield<=0 then breakShield(p) end
+     else d.shield=math.min(60,d.shield+.1) end
+     syncShieldImmunity(p)
      local events=physics.step(s,{ownedMotion=specialMotion.owns(d.attack),direction=i.moveX or i.x,walk=i.walk,analog=i.analog,analogX=i.analogX,dashPressed=i.dashPressed,blockMovement=d.shielding or (d.attack~=nil and (s.grounded or not d.attack.definition.aerial)) or d.stunned>0,
-      jumpPressed=i.jumpPressed and not d.attack and not d.specialFall and d.stunned==0,jumpHeld=i.jump,
+      jumpPressed=i.jumpPressed and not i.ropeJump and not d.attack and not d.specialFall and d.stunned==0,jumpHeld=i.jump,
       downPressed=i.downPressed,extraJumps=p:get('feather') or 0})
      if qa then
       if events.jump then log('[Falcon QA] JUMP') end
@@ -349,6 +385,6 @@ callback.register('onHUDDraw',function()
   graphics.color(gold);graphics.print(d.inputDevice=='controller' and 'Cross Attack | Circle Special | Square/Triangle Jump | Share Controls' or 'WASD  |  J Attack  K Special  L Defend  |  H Controls',w/2,44,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
  end
 end)
-log('[Falcon] Loaded 0.4.5: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
+log('[Falcon] Loaded 0.4.6: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
 
 

@@ -22,6 +22,7 @@ def download(url,path,sha=None):
 def doctor():
  if sys.platform!='linux':raise ValueError('Automated setup currently supports Linux/Wine. See docs/INSTALL.md.')
  missing=[name for name in ['wine','winepath','ffmpeg','flock'] if not shutil.which(name)]
+ if not shutil.which('gamescope') and not Path('/usr/games/gamescope').is_file():missing.append('gamescope')
  if not ctypes.util.find_library('lua5.4'):missing.append('liblua5.4')
  if missing:raise ValueError('Missing '+', '.join(missing)+'. See the prerequisite command in README.md.')
  print('System tools found. You also need a working Vulkan driver, including 32-bit support.')
@@ -106,9 +107,9 @@ def main():
   (profile/'profile.json').write_text(json.dumps({'mods':['Three-Choice Command','Captain Falcon'],'flags':[]},indent=2)+'\n')
   shutil.copy2(BASE/'config/prefs.json',output/'prefs.json')
   (output/'launchersettings.ini').write_text('[launcher]\nprofile=FalconRain\n')
-  config={'runtime':str(output),'wineprefix':str(output.parent/'wineprefix'),'logs':str(output.parent/'logs'),'game_source_sha256':hashlib.sha256(data.read_bytes()).hexdigest()}
+  config={'profile':'FalconRain','runtime':str(output),'wineprefix':str(output.parent/'wineprefix'),'logs':str(output.parent/'logs'),'game_source_sha256':hashlib.sha256(data.read_bytes()).hexdigest()}
   (BASE/'config/local.json').write_text(json.dumps(config,indent=2)+'\n')
-  (output/'falcon-ready.json').write_text(json.dumps({'version':'0.4.5','disc':json.loads((output/'mods/CaptainFalcon/melee-import.json').read_text())['provenance']['disc_id']}))
+  (output/'falcon-ready.json').write_text(json.dumps({'version':json.loads((output/'mods/CaptainFalcon/metadata.json').read_text())['version'],'disc':json.loads((output/'mods/CaptainFalcon/melee-import.json').read_text())['provenance']['disc_id']}))
   print('\nReady. Run ./launch.sh, or add that script to Steam as a non-Steam game.')
 
 if __name__=='__main__':

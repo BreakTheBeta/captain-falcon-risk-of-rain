@@ -143,3 +143,12 @@ for n=2,31 do
  assert(p:get('invincible')>0,'Controller roll immunity must cover frame '..n)
 end
 print('PASS: controller trigger + direction starts a fully protected roll')
+reset();p:set('invincible',0)
+frame({shoulderrb=true})
+assert(p.data.shielding and p:get('invincible')>=2,'Controller trigger grants native shield immunity')
+frame();assert(p:get('invincible')==0,'Releasing controller trigger removes shield immunity')
+reset(true);p.y=-60;p:set('activity',30);p:set('canrope',1)
+frame({face3=true},{lh=1})
+assert(p:get('activity')==0 and p.data.motion.vy<0 and p.data.motion.vx>0,'Controller jump leaves rope upward and sideways')
+assert(p.data.motion.jumps==1,'Rope jump leaves a double jump available')
+print('PASS: controller native shield immunity and directional rope jump')

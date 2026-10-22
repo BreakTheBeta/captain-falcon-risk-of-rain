@@ -10,7 +10,7 @@
 - `tools/HSDLib/HSDRaw/`: pinned MIT upstream source; see THIRD_PARTY.md.
 - `scripts/build-falcon-art.py`: procedural fallback sprite/mask generation.
 - `scripts/bake-melee-poses.*` and `build-falcon-selection.*`: supersampled original-model animation strips and character selection artwork, generated locally.
-- `tests/`: fast Lua input, physics, defence and asset regression checks. Lua 5.4 is run through Python ctypes; no game files are required for the four core suites.
+- `tests/`: fast Lua input, physics, defence and asset regression checks. Lua 5.4 is run through Python ctypes; no game files are required for the five core suites.
 
 The original GameMaker world and collision remain 2D. Gameplay uses 39 precomputed pose strips from the original XYZ model. The software renderer remains available for baking and camera previews. Visual TransN translation is removed; special movement is applied exactly once to the collision actor. These are Melee-inspired RoR controls/combat, not a replacement implementation of every Melee rule.
 
@@ -26,7 +26,7 @@ Keep all automated gameplay off the user's desktop. Start a virtual X display, t
 
 ```sh
 Xvfb :97 -screen 0 1280x720x24 -nolisten tcp &
-DISPLAY=:97 PULSE_SERVER=unix:/tmp/falcon-no-pulse PIPEWIRE_REMOTE=no-audio ./launch.sh
+DISPLAY=:97 SDL_VIDEODRIVER=x11 FALCON_GAMESCOPE_BACKEND=sdl PULSE_SERVER=unix:/tmp/falcon-no-pulse PIPEWIRE_REMOTE=no-audio ./launch.sh
 ```
 
 Install Xvfb/xdotool separately if needed. Scope automation and captures to that display. F4 cleanly exits the native test game. Keep gameplay fixtures and healing/invulnerability flags out of release profiles. Verify damage using an unprotected control hit before trusting shield/roll results. Do not overwrite a user's live installation or interrupt an active game.
@@ -40,3 +40,7 @@ Contributions should describe the input/trigger, changed behavior and verificati
 ## Optional CI
 
 `docs/ci.yml.example` contains a GitHub Actions configuration for core Lua tests, Python compilation, the .NET importer build and the source audit. To enable it, copy it to `.github/workflows/ci.yml` and push using credentials with workflow-write permission. The initial publishing token did not have that permission, so no active workflow is shipped. The same checks were run locally.
+
+For launcher-only checks, run `python3 tests/test-launcher.py`. These simulate the Gamescope/Wine process chain, verify one fullscreen wrapper, preserve paths containing spaces, propagate game failures and check lock release. During live Gamescope tests capture the **outer Gamescope window/display**, since native X11 window captures can contain stale images when Vulkan presents directly to Gamescope.
+
+The launcher stops lingering Wine **service helpers** after the tracked game exits. Cleanup requires all of: a fixed Wine helper name, the same WINEPREFIX, and ancestry under this launch's gamescopereaper. It does not kill arbitrary Wine apps or unrelated prefixes. This handles Wine services that otherwise keep Gamescope/Steam marked running after the actual game has closed.

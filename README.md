@@ -4,7 +4,7 @@ Play Melee-inspired Captain Falcon in **Risk of Rain (2013)**, with a three-choi
 
 Falcon has directional normals and specials, short hops, double jumps, wavedashing, analog walking/dashing, shield, and a fully invincible roll. His model, animation poses, movement curves and sound samples are imported **locally from your own Melee disc dump**.
 
-**Current release: 0.4.5. Single player. Linux/Wine is the tested platform.** This is a fan-made adaptation, not the full Melee engine. Risk of Rain Returns and Risk of Rain 2 are not supported.
+**Current release: 0.4.6. Single player. Linux/Wine is the tested platform.** This is a fan-made adaptation, not the full Melee engine. Risk of Rain Returns and Risk of Rain 2 are not supported.
 
 ## Play in three steps
 
@@ -15,7 +15,7 @@ On Debian/Ubuntu, install prerequisites once:
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install git python3 python3-venv ffmpeg liblua5.4-0 wine wine32:i386 libvulkan1 libvulkan1:i386
+sudo apt install git python3 python3-venv ffmpeg liblua5.4-0 wine wine32:i386 libvulkan1 libvulkan1:i386 gamescope
 ```
 
 Then:
@@ -56,13 +56,13 @@ See [setup and troubleshooting](docs/INSTALL.md) if anything fails.
 | Full controls guide | Share | View | H |
 | Pause | Options | Menu | Escape |
 
-Direction + special gives **neutral: Falcon Punch; side: Raptor Boost; up: Falcon Dive; down: Falcon Kick**. Tap jump for a short hop. Down while falling fast-falls. Ground shield blocks incoming damage until it breaks; roll protects throughout its animation. Air dodge diagonally into the floor to wavedash.
+Direction + special gives **neutral: Falcon Punch; side: Raptor Boost; up: Falcon Dive; down: Falcon Kick**. Tap jump for a short hop. Down while falling fast-falls. Ground shield grants native immunity while held and drains until it breaks; roll protects throughout its animation. Jump also detaches from ropes/ladders. Air dodge diagonally into the floor to wavedash.
 
 For **Moonlight**, configure Sunshine's gamepad emulation as **Xbox 360 / `x360`**, including when the client uses a PS4 controller. See [Steam and Moonlight](docs/CONTROLLERS.md).
 
 ## Steam and Moonlight
 
-Add this repository's `launch.sh` to Steam as a **non-Steam game** and name it “Captain Falcon + Risk of Rain”. Launch that entry from Steam or Moonlight's Desktop/Steam session. The script runs Wine itself: **leave Steam's forced Proton compatibility off**. Use a normal gamepad layout, rather than keyboard/mouse emulation. Close and reopen the game after mod updates.
+Add this repository's `launch.sh` to Steam as a **non-Steam game** and name it “Captain Falcon + Risk of Rain”. Launch that entry from Steam or Moonlight's Desktop/Steam session. The script runs Gamescope fullscreen and Wine itself: **leave Steam's forced Proton compatibility off**. Use a normal gamepad layout, rather than keyboard/mouse emulation. Close and reopen the game after mod updates.
 
 ## Source and development
 
