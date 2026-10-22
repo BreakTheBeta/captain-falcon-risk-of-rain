@@ -106,9 +106,9 @@ falcon:addCallback('init',function(p)
  d.nativeGravity=p:get('pGravity1');d.nativeLaunch=nil;d.frameInput=nil;d.framePad=nil
  d.lCancelUntil=nil;d.landedAt=nil;d.inputDevice=nil
  d.motion=physics.new();d.keys={};d.combo=0;d.comboTimer=0;d.tick=0;d.attack=nil;d.pending=nil
- d.ropeDetach=0;d.shieldNativeOwned=false;d.arrivalInput=nil
+ d.ropeDetach=0;d.shieldNativeOwned=false;d.arrivalInput=nil;d.death=nil
  d.hitstop=0;d.shield=60;d.shielding=false;d.stunned=0;d.help=false;d.airDodgeUsed=false;d.recoveryUsed=false;d.specialFall=false
- log('[Falcon] Initialized 0.4.7: keyboard + controller; native-size artwork; no skill cooldowns')
+ log('[Falcon] Initialized 0.4.8: keyboard + controller; native-size artwork; no skill cooldowns')
 end)
 falcon:addCallback('levelUp',function(p) p:survivorLevelUpStats(30,3,.002,2) end)
 -- Host skill dispatch is deliberately inert. The merged input interpreter below
@@ -162,7 +162,7 @@ end
 callback.register('preStep',function()
  for _,p in ipairs(misc.players) do
   if isFalcon(p) then
-   local d=data(p);d.beforeX=p.x;d.beforeY=p.y
+   local d=data(p);d.beforeX=p.x;d.beforeY=p.y;p.alpha=0
    -- Sample once before native enemy/damager updates. Reuse these edges in
    -- postStep so a first-frame shield/roll is already protecting the actor.
    d.frameInput,d.framePad=readInput(p,d)
@@ -218,6 +218,24 @@ local function moveAxis(p,amount,vertical)
   p.x=x;p.y=y;amount=amount-step
  end
 end
+-- The host still owns the run-ending transition. Only the visual body and
+-- its collision motion belong to Falcon while the native player remains.
+local function updateDeath(p)
+ local d=data(p);local s=d.motion
+ if not d.death then d.death={age=0};s.squat=0;s.fast=false;s.launchGravity=nil end
+ local death=d.death;death.age=death.age+1
+ d.attack=nil;d.pending=nil;d.arrivalInput=nil;d.shielding=false;d.hitstop=0;d.nativeLaunch=nil
+ syncShieldImmunity(p)
+ p.alpha=0;p.x=d.beforeX;p.y=d.beforeY
+ local ground=p:collidesMap(p.x,p.y+1)
+ s.grounded=ground and s.vy>=0
+ if s.grounded then s.vy=0 else s.vy=math.min(physics.constants.terminal,s.vy+physics.constants.gravity) end
+ s.vx=s.vx*(s.grounded and .75 or .98)
+ if math.abs(s.vx)<.02 then s.vx=0 end
+ moveAxis(p,s.vx,false);moveAxis(p,s.vy,true)
+ if s.grounded then death.landAge=(death.landAge or -1)+1 end
+ p:set('free',s.grounded and 0 or 1);p:set('pHspeed',0);p:set('pVspeed',0)
+end
 local function updateAttack(p,i)
  local d=data(p);local a=d.attack;if not a then return end
  local def=a.definition;local s=d.motion
@@ -272,6 +290,7 @@ callback.register('postStep',function()
     clearActivity(p);p:set('rope_parent',-1);p:set('canrope',0);activity=0
    end
    local alive=(p:get('dead') or 0)==0 and p:get('hp')>0
+   if alive and d.death then d.death=nil;d.soundDead=false end
    -- Native arrival owns activity 99. Edges sampled during its last frames
    -- would otherwise be consumed without ever reaching the fighter. Keep a
    -- six-frame handoff buffer, never an indefinite held-button retry.
@@ -348,7 +367,9 @@ callback.register('postStep',function()
      local sprite=d.shielding and sprites.shield or (not s.grounded and (s.vy<0 and sprites.jump or sprites.fall) or (math.abs(s.vx)>.2 and sprites.run or sprites.idle))
      p.sprite=sprite;p.subimage=1+math.floor(d.tick/6)%sprite.frames;p.spriteSpeed=0
     end
+   elseif not alive and d.beforeX then updateDeath(p)
    else d.shielding=false;d.pending=nil;s.vx=0;s.vy=0;d.attack=nil end
+   p.alpha=0
    -- Opt-in, bounded startup diagnostics for remote-controller problems.
    -- Capture raw controller input alongside the fighter's blocking state;
    -- never alter assignment, dispatch, timing, or gameplay for tracing.
@@ -417,6 +438,6 @@ callback.register('onHUDDraw',function()
   graphics.color(gold);graphics.print(d.inputDevice=='controller' and 'Cross Attack | Circle Special | Square/Triangle Jump | Share Controls' or 'WASD  |  J Attack  K Special  L Defend  |  H Controls',w/2,44,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
  end
 end)
-log('[Falcon] Loaded 0.4.7: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
+log('[Falcon] Loaded 0.4.8: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
 
 

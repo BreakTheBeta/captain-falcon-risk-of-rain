@@ -77,7 +77,10 @@ end
 function R.draw(p)
  local d=p:getData();local s=d.motion;if not s then return end
  local name,frame='idle',d.tick
- if p:get('dead')==1 then name='death';frame=min(59,d.tick)
+ if (p:get('dead') or 0)~=0 or p:get('hp')<=0 then
+  name=s.grounded and model.clips.deathland and 'deathland' or 'death'
+  frame=d.death and (name=='deathland' and d.death.landAge or d.death.age-1) or 0
+  frame=frame or 0
  elseif d.attack then
   name=d.attack.name;frame=d.attack.age
   if name=='punch' and d.attack.airborne then name='airpunch' end

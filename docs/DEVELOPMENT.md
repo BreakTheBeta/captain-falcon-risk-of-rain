@@ -10,9 +10,9 @@
 - `tools/HSDLib/HSDRaw/`: pinned MIT upstream source; see THIRD_PARTY.md.
 - `scripts/build-falcon-art.py`: procedural fallback sprite/mask generation.
 - `scripts/bake-melee-poses.*` and `build-falcon-selection.*`: supersampled original-model animation strips and character selection artwork, generated locally.
-- `tests/`: fast Lua input, physics, defence and asset regression checks. Lua 5.4 is run through Python ctypes; no game files are required for the five core suites.
+- `tests/`: fast Lua input, physics, defence and asset regression checks. Lua 5.4 is run through Python ctypes; no game files are required for the seven core suites.
 
-The original GameMaker world and collision remain 2D. Gameplay uses 39 precomputed pose strips from the original XYZ model. The software renderer remains available for baking and camera previews. Visual TransN translation is removed; special movement is applied exactly once to the collision actor. These are Melee-inspired RoR controls/combat, not a replacement implementation of every Melee rule.
+The original GameMaker world and collision remain 2D. Gameplay uses 40 precomputed pose strips from the original XYZ model. The software renderer remains available for baking and camera previews. Visual TransN translation is removed; special movement is applied exactly once to the collision actor. These are Melee-inspired RoR controls/combat, not a replacement implementation of every Melee rule.
 
 ## Build and test
 

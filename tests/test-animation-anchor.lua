@@ -20,7 +20,7 @@ local requested
 R.getPixels=function(name,frame) requested={name,frame};return {} end
 graphics={alpha=function()end,color=function()end,rectangle=function()end}
 local d={motion={grounded=false,vy=-1,facing=1,vx=0},tick=200,airAnimation='doublejump',airFrame=R.model.clips.doublejump+3}
-local p={x=100,y=100,getData=function()return d end,get=function()return 0 end}
+local p={x=100,y=100,getData=function()return d end,get=function(_,key)return key=='hp' and 125 or 0 end}
 R.draw(p)
 assert(requested[1]=='doublejump' and requested[2]==R.model.clips.doublejump-1,'Completed aerial animation restarted while still airborne')
 print('PASS: airborne animation holds its last frame instead of wrapping')
