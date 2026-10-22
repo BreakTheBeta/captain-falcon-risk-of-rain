@@ -42,9 +42,9 @@ See [setup and troubleshooting](docs/INSTALL.md) if anything fails.
 
 ## Gameplay video
 
-Falcon Punch, short hops and wavedashing, edited in FilmCraft through craftingApps. Click the animated preview for the full **720p / 60 fps video with game audio**.
+A **63-second** FilmCraft edit: Falcon Punch, short hops and wavedashing, followed by running around Dried Lake with aerials, jab combos, directional specials and a shield roll. Click the animated preview for the full **720p / 60 fps video with game audio**.
 
-[![Watch Falcon Punch, short hops and wavedashing](docs/media/falcon-showcase-preview.gif)](https://breakthebeta.github.io/captain-falcon-risk-of-rain/media/)
+[![Watch Falcon running, fighting and using Melee moves](docs/media/falcon-showcase-preview.gif?v=extended-63)](https://breakthebeta.github.io/captain-falcon-risk-of-rain/media/)
 
 [Download the MP4](https://github.com/BreakTheBeta/captain-falcon-risk-of-rain/raw/refs/heads/main/docs/media/falcon-showcase.mp4) · [Capture and edit notes](docs/media/README.md)
 

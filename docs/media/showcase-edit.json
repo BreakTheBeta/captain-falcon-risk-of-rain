@@ -8,9 +8,8 @@
     "fps": 60.0,
     "sample_rate": 48000
   },
-  "duration_seconds": 19.3,
+  "duration_seconds": 63,
   "source": "Private original gameplay capture, retained in craftingApps project falcon-showcase",
-  "source_sha256": "953c6c71a696e8105213604ab8526ab8bf99375fd76a6c8cf474ef93005dd673",
   "segments": [
     {
       "source": "s002",
@@ -35,26 +34,36 @@
       "in": 17.5,
       "out": 20.3,
       "reason": "Closing Falcon Punch with flame payoff"
+    },
+    {
+      "source": "s003",
+      "in": 1,
+      "out": 44.7,
+      "reason": "Continuous live running, jumps, aerials, jab combo, Punch, directional specials and shield roll in Dried Lake. Keep setup/action/recovery at recorded speed."
     }
   ],
   "native_finishing": {
-    "framing": "300% centred close view; no retiming",
-    "transitions": "12-frame whip, push and cross zoom at chapter boundaries",
+    "framing": "Original section300% centred close view; free play160% wider view. No retiming.",
+    "transitions": "Original chapter transitions preserved; 12-frame whip into appended free play",
     "titles": "Native editable FilmCraft text: amber #F4C65B, Bold, shadow and dark background; keyboard/controller labels",
-    "fades": "12-frame opening and 18-frame closing dip to black"
+    "fades": "Opening fade preserved; former closing fade replaced by centered whip into free play. New chapter title dissolves out over12frames."
   },
-  "review_scope": "Gameplay picture and saved edit structure; full audio listening pending",
+  "review_scope": "Original edit plus new free play reviewed for picture and saved structure; continuous audio listening pending",
+  "source_hashes": {
+    "s002": "953c6c71a696e8105213604ab8526ab8bf99375fd76a6c8cf474ef93005dd673",
+    "s003": "91db2675b7207fdbf19c5b293a6ba3da2314c45b62bade44e64d2ec35a94a0f3"
+  },
   "export": {
-    "video_sha256": "6dae142da1b3eae32ff574b3d7e686601dfe89e7bcc2e5eb2ffe475990f19b4e",
-    "duration_seconds": 19.306,
-    "frames": 1158,
+    "video_sha256": "a39fcb097fee9ae3b6050d03a28f5a3e26527727d562905929c3c21e86df0493",
+    "duration_seconds": 63.018,
+    "frames": 3780,
     "codec": "H.264 / AAC",
     "colour": "SDR Rec.709",
     "verification": [
-      "native saved-edit verification passed in three independent rounds",
+      "native append verification passed after title fade and transition intent clarification",
       "no offline media",
       "full video/audio decode passed",
-      "sampled exported picture and chapter joins reviewed"
+      "sampled exported original and free-play pictures reviewed"
     ]
   }
 }
