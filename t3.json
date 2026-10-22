@@ -1,0 +1,10 @@
+{
+  "$schema": "https://t3.codes/schema/t3.json",
+  "scripts": [
+    {"name":"Check setup","command":"python3 scripts/setup.py --check","icon":"configure","runOnWorktreeCreate":false},
+    {"name":"Setup game","command":"./setup.sh","icon":"build","runOnWorktreeCreate":false},
+    {"name":"Test source","command":"python3 scripts/test.py","icon":"test","runOnWorktreeCreate":false},
+    {"name":"Deploy edits","command":"python3 scripts/update-mods.py","icon":"build","runOnWorktreeCreate":false},
+    {"name":"Play","command":"./launch.sh","icon":"play","runOnWorktreeCreate":false}
+  ]
+}

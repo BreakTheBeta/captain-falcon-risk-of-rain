@@ -1,0 +1,8 @@
+{
+  "name": "Captain Falcon",
+  "internalname": "captainFalcon",
+  "version": "0.4.5",
+  "author": "Will",
+  "description": "Original Melee Falcon with canonical XInput controller support. PS4 Moonlight clients use Cross attack, Circle special, Square/Triangle jump, L2/R2 shield.",
+  "mpcompat": false
+}

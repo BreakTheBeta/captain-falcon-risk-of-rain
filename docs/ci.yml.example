@@ -1,0 +1,20 @@
+name: Source checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
+      - run: python3 -m py_compile scripts/*.py
+      - run: python3 scripts/test.py
+      - run: dotnet build tools/FalconImport --configuration Release
+      - run: python3 scripts/audit-source.py

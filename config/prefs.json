@@ -1,0 +1,61 @@
+{
+  "video": {
+    "quality": 3,
+    "fullscreen": false,
+    "scale": 1,
+    "hud_scale": 1,
+    "resolution": 0,
+    "show money": true,
+    "show damage": true,
+    "frameskip": false,
+    "vsync": false,
+    "elites": true,
+    "rorml_visuals_on": true
+  },
+  "general": {
+    "volume": 0.5,
+    "music volume": 1,
+    "autopause": true
+  },
+  "online": {
+    "hide ip": false,
+    "name": "Player",
+    "item sharing": false,
+    "host port": 11100,
+    "steam": false,
+    "client port": 11100,
+    "client IP": "127.0.0.1",
+    "no item message": false,
+    "max players": 32
+  },
+  "blacklist": "9201000000000000",
+  "controls": {
+    "keyboard": {
+      "left": 65,
+      "right": 68,
+      "up": 87,
+      "down": 83,
+      "jump": 32,
+      "skill1": 74,
+      "skill2": 75,
+      "skill3": 76,
+      "skill4": 73,
+      "use": 81,
+      "interact": 69,
+      "swap": 70,
+      "pause": 27
+    },
+    "gamepad": {
+      "enabled": true,
+      "jump": 32771,
+      "skill1": 32769,
+      "skill2": 32770,
+      "skill3": 32775,
+      "skill4": 32781,
+      "use": 32773,
+      "interact": 32774,
+      "swap": 32779,
+      "pause": 32778
+    }
+  }
+}
