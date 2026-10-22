@@ -44,7 +44,7 @@ See [setup and troubleshooting](docs/INSTALL.md) if anything fails.
 
 Falcon Punch, short hops and wavedashing, edited in FilmCraft through craftingApps. Click the animated preview for the full **720p / 60 fps video with game audio**.
 
-[![Watch Falcon Punch, short hops and wavedashing](docs/media/falcon-showcase-preview.gif)](https://github.com/BreakTheBeta/captain-falcon-risk-of-rain/blob/main/docs/media/falcon-showcase.mp4)
+[![Watch Falcon Punch, short hops and wavedashing](docs/media/falcon-showcase-preview.gif)](https://breakthebeta.github.io/captain-falcon-risk-of-rain/media/)
 
 [Download the MP4](https://github.com/BreakTheBeta/captain-falcon-risk-of-rain/raw/refs/heads/main/docs/media/falcon-showcase.mp4) · [Capture and edit notes](docs/media/README.md)
 

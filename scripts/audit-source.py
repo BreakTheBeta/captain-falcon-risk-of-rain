@@ -4,7 +4,7 @@ from pathlib import Path
 base=Path(__file__).resolve().parents[1]
 files=subprocess.check_output(['git','ls-files','-z'],cwd=base).decode().split('\0')
 errors=[]
-allowed={'.cs','.csproj','.py','.lua','.md','.txt','.json','.sh','.yml','.yaml','.example','.gitignore','.gitattributes'}
+allowed={'.html','.cs','.csproj','.py','.lua','.md','.txt','.json','.sh','.yml','.yaml','.example','.gitignore','.gitattributes'}
 for name in filter(None,files):
  p=base/name
  if not p.is_file():continue
