@@ -14,6 +14,8 @@
 /mods/CaptainFalcon/melee_motion_data.lua
 /mods/CaptainFalcon/melee_sound_events.lua
 /mods/CaptainFalcon/melee_pose_sprites.lua
+/mods/CaptainFalcon/melee_effect_data.lua
+/mods/CaptainFalcon/melee-effect-audit.json
 /mods/CaptainFalcon/melee-import.json
 /mods/CaptainFalcon/melee-sound-audit.json
 __pycache__/

@@ -5,6 +5,7 @@ local controller=require('controller')
 local combat=require('combat')
 local mesh=require('melee_renderer')
 local meleeAudio=require('melee_audio')
+local meleeEffects=require('melee_effects')
 local falcon=Survivor.new('Captain Falcon')
 local qa=modloader.checkFlag('falcon_test')
 local traceInput=modloader.checkFlag('falcon_input_trace')
@@ -108,7 +109,7 @@ falcon:addCallback('init',function(p)
  d.motion=physics.new();d.keys={};d.combo=0;d.comboTimer=0;d.tick=0;d.attack=nil;d.pending=nil
  d.ropeDetach=0;d.shieldNativeOwned=false;d.arrivalInput=nil;d.death=nil
  d.hitstop=0;d.shield=60;d.shielding=false;d.stunned=0;d.help=false;d.airDodgeUsed=false;d.recoveryUsed=false;d.specialFall=false
- log('[Falcon] Initialized 0.4.8: keyboard + controller; native-size artwork; no skill cooldowns')
+ log('[Falcon] Initialized 0.4.9: keyboard + controller; native-size artwork; no skill cooldowns')
 end)
 falcon:addCallback('levelUp',function(p) p:survivorLevelUpStats(30,3,.002,2) end)
 -- Host skill dispatch is deliberately inert. The merged input interpreter below
@@ -270,7 +271,6 @@ local function updateAttack(p,i)
  elseif a.name=='spotdodge' then
   s.vx=0;if t>=2 and t<=16 then p:set('invincible',math.max(p:get('invincible'),2)) end
  end
- if t%4==0 and (a.name=='punch' and t>=40 or a.name=='kick' or a.name=='dive') then burst(p,4,Color.fromHex(0xFF853A)) end
  p.sprite=sprites[def.sprite];p.subimage=math.min(p.sprite.frames,1+math.floor(t/def.duration*p.sprite.frames));p.spriteSpeed=0
  if (specialMotion.owns(a) and a.motionDone) or (not specialMotion.owns(a) and t>=def.duration) then finish(p,false) end
 end
@@ -385,7 +385,7 @@ callback.register('postStep',function()
  end
 end)
 callback.register('onDraw',function()
- for _,p in ipairs(misc.players) do if isFalcon(p) then mesh.draw(p) end end
+ for _,p in ipairs(misc.players) do if isFalcon(p) then mesh.draw(p);meleeEffects.draw(p) end end
  for i=#effects,1,-1 do
   local e=effects[i];graphics.color(e.color);graphics.alpha(e.ttl/12);graphics.circle(e.x,e.y,e.size*(11-e.ttl)/10,true)
   e.ttl=e.ttl-1;if e.ttl<=0 then table.remove(effects,i) end
@@ -438,6 +438,6 @@ callback.register('onHUDDraw',function()
   graphics.color(gold);graphics.print(d.inputDevice=='controller' and 'Cross Attack | Circle Special | Square/Triangle Jump | Share Controls' or 'WASD  |  J Attack  K Special  L Defend  |  H Controls',w/2,44,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
  end
 end)
-log('[Falcon] Loaded 0.4.8: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
+log('[Falcon] Loaded 0.4.9: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
 
 

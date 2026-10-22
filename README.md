@@ -2,9 +2,11 @@
 
 Play Melee-inspired Captain Falcon in **Risk of Rain (2013)**, with a three-choice item mode: every normal item reward offers three random items of the same rarity.
 
-Falcon has directional normals and specials, short hops, double jumps, wavedashing, analog walking/dashing, shield, and a fully invincible roll. His model, animation poses, movement curves and sound samples are imported **locally from your own Melee disc dump**.
+Falcon has directional normals and specials, short hops, double jumps, wavedashing, analog walking/dashing, shield, and a fully invincible roll. His model, animation poses, movement curves, flame particles and sound samples are imported **locally from your own Melee disc dump**.
 
-**Current release: 0.4.8. Single player. Linux/Wine is the tested platform.** This is a fan-made adaptation, not the full Melee engine. Risk of Rain Returns and Risk of Rain 2 are not supported.
+**Current release: 0.4.9. Single player. Linux/Wine is the tested platform.** This is a fan-made adaptation, not the full Melee engine. Risk of Rain Returns and Risk of Rain 2 are not supported.
+
+Original flame particles play on Punch, Kick and Raptor Boost hits. See [effect import and scope](docs/EFFECTS.md).
 
 ## Play in three steps
 

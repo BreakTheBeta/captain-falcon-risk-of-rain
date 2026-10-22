@@ -5,6 +5,7 @@
 - `mods/CaptainFalcon/`: input, fighter physics, attacks, defence, special motion, renderer and sound scheduling.
 - `mods/ThreeChoiceCommand/`: independent per-crate three-item pools.
 - `scripts/import-melee.py`: local disc extraction, asset conversion and import manifests.
+- `scripts/build-melee-effects.py` and `scripts/melee_particles.py`: private particle atlases from original Falcon textures, scripts and animated emitters.
 - `scripts/import-melee-motion.py`: native TransN deltas, special attributes and command-var gates.
 - `tools/FalconImport/`: .NET HSD model/skeleton/animation importer.
 - `tools/HSDLib/HSDRaw/`: pinned MIT upstream source; see THIRD_PARTY.md.

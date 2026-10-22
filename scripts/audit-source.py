@@ -10,7 +10,7 @@ for name in filter(None,files):
  if not p.is_file():continue
  if p.suffix not in allowed and p.name not in {'LICENSE','POD-LICENSE','.gitignore','.gitattributes'}:errors.append('Unexpected tracked format: '+name)
  if name.startswith(('build/','melee-source/','runtime/','downloads/','.venv/','.tools/')):errors.append('Local/private data: '+name)
- if name.startswith('mods/CaptainFalcon/melee_clip_') or p.name in {'melee_model.lua','melee_motion_data.lua','melee_sound_events.lua','melee_pose_sprites.lua','melee-import.json','melee-sound-audit.json'}:errors.append('Generated disc asset: '+name)
+ if name.startswith('mods/CaptainFalcon/melee_clip_') or p.name in {'melee_model.lua','melee_motion_data.lua','melee_sound_events.lua','melee_pose_sprites.lua','melee_effect_data.lua','melee-effect-audit.json','melee-import.json','melee-sound-audit.json'}:errors.append('Generated disc asset: '+name)
  # Inspect staged contents, since those are what the commit would publish.
  data=subprocess.check_output(['git','show',':'+name],cwd=base)
  if b'\0' in data:errors.append('Binary data: '+name);continue

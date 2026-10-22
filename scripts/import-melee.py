@@ -14,10 +14,10 @@ def extract(iso,out):
    while stack and i>=stack[-1][1]:stack.pop()
    flags,offset,length=struct.unpack_from('>III',fst,12*i);p=12*count+(flags&0xffffff);name=fst[p:fst.index(b'\0',p)].decode();path='/'.join([s[0] for s in stack]+[name])
    if flags>>24:stack.append((name,length));continue
-   if name in ['PlCa.dat','PlCaNr.dat','PlCaAJ.dat'] or path in ['audio/captain.ssm','audio/main.ssm','audio/smash2.sem']:
+   if name in ['PlCa.dat','PlCaNr.dat','PlCaAJ.dat','EfCaData.dat'] or path in ['audio/captain.ssm','audio/main.ssm','audio/smash2.sem']:
     f.seek(offset);data=f.read(length);assert len(data)==length
     (out/name).write_bytes(data);found[path]={'bytes':length,'sha256':hashlib.sha256(data).hexdigest()}
-  assert len(found)==6,found
+  assert len(found)==7,found
  return game,found
 def decode_ssm(path):
  d=path.read_bytes();header,_,count,start=struct.unpack_from('>IIII',d);header+=16;pos=16;result=[]
@@ -88,6 +88,8 @@ def main():
   else:shutil.copy2(p,target/p.name)
  staging.cleanup()
  if not args.audio_only:
+  subprocess.run([str(Path(os.environ.get('FALCON_DOTNET') or shutil.which('dotnet') or BASE/'.tools/dotnet/dotnet')),str(BASE/'tools/FalconImport/bin/FalconImport.dll'),'--effects',str(files),str(converted)],check=True)
+  subprocess.run([sys.executable,str(BASE/'scripts/build-melee-effects.py'),'--mod-root',str(target)],check=True)
   subprocess.run([sys.executable,str(BASE/'scripts/bake-melee-poses.py')],env={**__import__('os').environ,'FALCON_MOD_ROOT':str(target)},check=True)
  print('Imported',n,'vertices,',len(triangles),'triangles,',len(clips),'animation clips and',len(needed),'sounds')
 if __name__=='__main__':main()

@@ -46,3 +46,5 @@ The normal launcher always wraps the game in Gamescope (`-f`, internal 1280×720
 Set `FALCON_OUTPUT_WIDTH` and `FALCON_OUTPUT_HEIGHT` to change the output resolution. Gamescope still runs fullscreen and keeps the game at 720p internally. Use `FALCON_GAMESCOPE=0` only for a diagnostic launch without Gamescope; `FALCON_GAMESCOPE_BACKEND=sdl` can force the nested SDL backend when troubleshooting. Gamescope logs are next to `launch.log`.
 
 Version 0.4.8 adds an original Melee grounded knockdown animation for Falcon's corpse. Existing installations need their local assets reimported once to get this pose; copying Lua source alone keeps the older airborne death-pose fallback. Close the game, then run `python scripts/import-melee.py --source "/path/to/Melee.iso" --mod-root "/path/to/play/mods/CaptainFalcon"` in the setup Python environment. This updates imported assets without replacing profiles or saves. Fresh setup includes it automatically.
+
+Version 0.4.9 imports original Falcon flame particles. Existing builds need another local asset import; see [effect setup and scope](EFFECTS.md).
