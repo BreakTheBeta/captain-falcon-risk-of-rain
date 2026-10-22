@@ -4,7 +4,7 @@ Play Melee-inspired Captain Falcon in **Risk of Rain (2013)**, with a three-choi
 
 Falcon has directional normals and specials, short hops, double jumps, wavedashing, analog walking/dashing, shield, and a fully invincible roll. His model, animation poses, movement curves and sound samples are imported **locally from your own Melee disc dump**.
 
-**Current release: 0.4.6. Single player. Linux/Wine is the tested platform.** This is a fan-made adaptation, not the full Melee engine. Risk of Rain Returns and Risk of Rain 2 are not supported.
+**Current release: 0.4.7. Single player. Linux/Wine is the tested platform.** This is a fan-made adaptation, not the full Melee engine. Risk of Rain Returns and Risk of Rain 2 are not supported.
 
 ## Play in three steps
 

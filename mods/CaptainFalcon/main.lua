@@ -105,9 +105,9 @@ falcon:addCallback('init',function(p)
  d.nativeGravity=p:get('pGravity1');d.nativeLaunch=nil;d.frameInput=nil;d.framePad=nil
  d.lCancelUntil=nil;d.landedAt=nil;d.inputDevice=nil
  d.motion=physics.new();d.keys={};d.combo=0;d.comboTimer=0;d.tick=0;d.attack=nil;d.pending=nil
- d.ropeDetach=0;d.shieldNativeOwned=false
+ d.ropeDetach=0;d.shieldNativeOwned=false;d.arrivalInput=nil
  d.hitstop=0;d.shield=60;d.shielding=false;d.stunned=0;d.help=false;d.airDodgeUsed=false;d.recoveryUsed=false;d.specialFall=false
- log('[Falcon] Initialized 0.4.6: keyboard + controller; native-size artwork; no skill cooldowns')
+ log('[Falcon] Initialized 0.4.7: keyboard + controller; native-size artwork; no skill cooldowns')
 end)
 falcon:addCallback('levelUp',function(p) p:survivorLevelUpStats(30,3,.002,2) end)
 -- Host skill dispatch is deliberately inert. The merged input interpreter below
@@ -271,6 +271,27 @@ callback.register('postStep',function()
     clearActivity(p);p:set('rope_parent',-1);p:set('canrope',0);activity=0
    end
    local alive=(p:get('dead') or 0)==0 and p:get('hp')>0
+   -- Native arrival owns activity 99. Edges sampled during its last frames
+   -- would otherwise be consumed without ever reaching the fighter. Keep a
+   -- six-frame handoff buffer, never an indefinite held-button retry.
+   local arriving=alive and activity==99 and not d.attack
+   local actionable=alive and (activity==0 or d.attack)
+   local pressed=i.attackPressed or i.specialPressed or i.jumpPressed or i.defendPressed or i.tauntPressed
+   if d.arrivalInput then
+    d.arrivalInput.life=d.arrivalInput.life-1
+    if d.arrivalInput.life<=0 or not (arriving or actionable) then d.arrivalInput=nil end
+   end
+   if arriving and pressed then d.arrivalInput={input=i,life=7}
+   elseif actionable and d.arrivalInput then
+    if not pressed then
+     local buffered=d.arrivalInput.input
+     for _,action in ipairs({'attack','special','jump','defend','taunt'}) do i[action..'Pressed']=buffered[action..'Pressed'] end
+     if buffered.attackPressed or buffered.specialPressed then
+      i.x=buffered.x;i.y=buffered.y;i.smash=buffered.smash;i.cstick=buffered.cstick
+     end
+    end
+    d.arrivalInput=nil
+   end
    if alive and d.beforeX and (activity==0 or d.attack) then
     local nativeV=p:get('pVspeed') or 0
     local launch=nativeV<=-5 and nativeV or d.nativeLaunch;d.nativeLaunch=nil
@@ -385,6 +406,6 @@ callback.register('onHUDDraw',function()
   graphics.color(gold);graphics.print(d.inputDevice=='controller' and 'Cross Attack | Circle Special | Square/Triangle Jump | Share Controls' or 'WASD  |  J Attack  K Special  L Defend  |  H Controls',w/2,44,graphics.FONT_DEFAULT,graphics.ALIGN_MIDDLE)
  end
 end)
-log('[Falcon] Loaded 0.4.6: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
+log('[Falcon] Loaded 0.4.7: WASD + JKL; fighter attacks/specials; QA='..tostring(qa))
 
 
