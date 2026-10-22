@@ -40,6 +40,18 @@ Choose **Single Player**, open the **second survivor page** using the right arro
 
 See [setup and troubleshooting](docs/INSTALL.md) if anything fails.
 
+## Screenshots
+
+Development captures from the Linux/Wine build. Gameplay captures include test funds/items used during verification.
+
+![Captain Falcon selected on the survivor screen, with controller and keyboard instructions](docs/screenshots/survivor-selection.png)
+
+![Captain Falcon exploring Damp Caverns with item test crates nearby](docs/screenshots/falcon-gameplay.png)
+
+![Imported Melee flame particles during Falcon Punch in Desolate Forest](docs/screenshots/falcon-punch-flames.png)
+
+The flame capture freezes the move for inspection; its FPS counter does not measure normal gameplay performance. These are gameplay screenshots, not downloadable game assets.
+
 ## Controls
 
 | Action | PS4 via Moonlight/XInput | Xbox layout | Keyboard |

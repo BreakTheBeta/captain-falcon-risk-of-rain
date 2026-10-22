@@ -39,3 +39,6 @@ __pycache__/
 *.bin
 Save.ini
 *.log
+
+# Reviewed gameplay screenshots only; extracted assets stay private.
+!/docs/screenshots/*.png

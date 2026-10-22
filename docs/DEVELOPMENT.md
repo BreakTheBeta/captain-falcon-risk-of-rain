@@ -34,7 +34,7 @@ Install Xvfb/xdotool separately if needed. Scope automation and captures to that
 
 ## Publication
 
-Run `python3 scripts/audit-source.py` after staging files and before publishing. Commit only source, docs, configuration, and third-party license notices. Never publish a generated play directory, imported Lua mesh/motion tables, sound files, pose atlases, proprietary executables, disc dumps, save files, local logs, or local configuration. Release ZIPs must be source-only too.
+Run `python3 scripts/audit-source.py` after staging files and before publishing. Commit only source, docs, configuration, third-party license notices, and reviewed gameplay screenshots under `docs/screenshots/`. Screenshot PNGs must show gameplay or game menus; extracted textures, sprite sheets and other game assets remain excluded. Never publish a generated play directory, imported Lua mesh/motion tables, sound files, pose atlases, proprietary executables, disc dumps, save files, local logs, or local configuration. Release ZIPs must be source-only too.
 
 Contributions should describe the input/trigger, changed behavior and verification. Report the OS/Wine/controller path and Melee disc region when filing a bug; do not attach a disc or game files.
 
